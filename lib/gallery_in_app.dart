@@ -1,17 +1,32 @@
-// You have generated a new plugin project without
-// specifying the `--platforms` flag. A plugin project supports no platforms is generated.
-// To add platforms, run `flutter create -t plugin --platforms <platforms> .` under the same
-// directory. You can also find a detailed instruction on how to add platforms in the `pubspec.yaml` at https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
-
-import 'dart:async';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
-class GalleryInApp {
-  static const MethodChannel _channel = MethodChannel('gallery_in_app');
+class GalleryInApp extends StatelessWidget {
+  const GalleryInApp({Key? key}) : super(key: key);
 
-  static Future<String?> get platformVersion async {
-    final String? version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
+  @override
+  Widget build(BuildContext context) {
+    const String viewType = 'com.rodolfodebonis.gallery_in_app/gallery_in_app';
+    final Map<String, dynamic> creationParams = <String, dynamic>{};
+
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return AndroidView(
+          viewType: viewType,
+          layoutDirection: TextDirection.ltr,
+          creationParams: creationParams,
+          creationParamsCodec: const StandardMessageCodec(),
+        );
+      case TargetPlatform.iOS:
+        return UiKitView(
+          viewType: viewType,
+          layoutDirection: TextDirection.ltr,
+          creationParams: creationParams,
+          creationParamsCodec: const StandardMessageCodec(),
+        );
+      default:
+        throw UnsupportedError("Unsupported platform view");
+    }
   }
 }
